@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-d
 
 import './App.css';
 import { Navbar } from './components/Navbar';
-import PageContainer from './components/PageContainer';
 import { DashboardPage } from './pages/DashboardPage';
 import { ShipmentsPage } from './pages/ShipmentsPage';
 
@@ -20,7 +19,6 @@ export const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Router>
-        <PageContainer>
           <Navbar />
           <Switch>
             <Route exact path="/">
@@ -32,9 +30,7 @@ export const App = () => {
             <Route path="/shipments">
               <ShipmentsPage />
             </Route>
-          </Switch>
-        </PageContainer>
-        
+          </Switch>        
       </Router>
     </ThemeProvider>
   );

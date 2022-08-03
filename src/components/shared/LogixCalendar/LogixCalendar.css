@@ -1,0 +1,38 @@
+.grid-calendar{
+    margin: 16px;
+    grid-template-rows: repeat(5, 1fr);
+}
+
+.date-cell-style{
+    font-size: 13px;
+    color: rgba(0,0,0,0.6);
+    margin: 4px 4px 0 0;
+}
+
+.weekday-style{
+    font-size: 14px;
+    color: rgba(0,0,0,0.8);
+    font-weight: 700;
+    margin-left: 8px;
+}
+
+.cell-tag {
+    background-color: dodgerblue;
+    border-radius: 8px;
+    padding: 6px 4px;
+    margin: 10px;
+}
+
+.transport-type{
+    width: 15px;
+    height: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    margin-top: -16px;
+    margin-bottom: -4px;
+    background-color: dodgerblue;
+    border-radius: 1000px;
+    
+}

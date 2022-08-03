@@ -1,52 +1,8 @@
 import { ReactElement, useEffect, useState } from "react"
 import { Box, makeStyles, useTheme } from "@material-ui/core"
-import { DataGrid, GridColDef } from "@material-ui/data-grid"
 import Loader from 'react-loader-spinner'
 import { fetchShipments, FetchShipmentsResult, INITIAL_RESULT, RequestStatus } from "../data/fetch-shipments"
-import DatagridLogix from "../components/shared/Datagrid"
-
-const COLUMNS: GridColDef[] = [
-    {
-        field: 'houseBillNumber',
-        headerName: 'House Bill',
-        width: 150
-    },
-    {
-        field: 'client',
-        headerName: 'Shipper',
-        width: 200
-    },
-    {
-        field: 'origin',
-        headerName: 'Origin',
-        width: 400
-    },
-    {
-        field: 'destination',
-        headerName: 'Destination',
-        width: 400
-    },
-    {
-        field: 'mode',
-        headerName: 'Mode',
-        width: 200
-    },
-    {
-        field: 'estimatedDeparture',
-        headerName: 'Estimated Departure',
-        width: 200
-    },
-    {
-        field: 'estimatedArrival',
-        headerName: 'Estimated Arrival',
-        width: 200
-    },
-    {
-        field: 'status',
-        headerName: 'Status',
-        width: 200
-    }
-]
+import DatagridLogix from "../components/shared/Datagrid/Datagrid"
 
 const useStyles = makeStyles({
     grid: {
@@ -67,8 +23,17 @@ export const ShipmentsPage: React.FC = () => {
     const theme = useTheme()
 
     const [fetchShipmentsResult, setFetchShipmentsResult] = useState<FetchShipmentsResult >(INITIAL_RESULT)
+
+    const getShipmentDetails = () => {
+        setFetchShipmentsResult(INITIAL_RESULT)
+        fetchShipments().then((res: FetchShipmentsResult) => {
+           setFetchShipmentsResult(res)
+        })
+    } 
+
+    
     useEffect(() => {
-        fetchShipments().then(result => setFetchShipmentsResult(result))
+        getShipmentDetails()
     }, [])
 
     let component: ReactElement
@@ -86,7 +51,12 @@ export const ShipmentsPage: React.FC = () => {
             </>
             break
         case RequestStatus.ERROR:
-            component = <p>Error</p>
+            component = <div className="flex justify-center">
+            <div className="mt-4">
+                <p className="text-center">error</p>
+                <p className="button-default" onClick={() => getShipmentDetails()}> Try Again </p>
+            </div>
+        </div>    
             break
     }
 

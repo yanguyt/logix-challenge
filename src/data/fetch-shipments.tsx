@@ -1,4 +1,4 @@
-import { format, isSameDay } from 'date-fns'
+import { format } from 'date-fns'
 import { Shipment } from "./Shipment"
 import { SHIPMENTS_DATA } from './shipments-data'
 
@@ -22,9 +22,10 @@ type LoadingResult = {
     status: RequestStatus.LOADING
 }
 
-type FilterOptions = {
+export type FilterOptions = {
     arrivalTime?: Date
     houseBill?: string
+    status?: string
 }
 
 export const INITIAL_RESULT: LoadingResult = {
@@ -76,7 +77,7 @@ export const fetchShipments = async (): Promise<FetchShipmentsResult> => {
     }
 }
 
-export const fetchShipmentsByDateAndHouseNumber = async ({houseBill = "", arrivalTime = new Date()}: FilterOptions): Promise<FetchShipmentsResult> => {
+export const fetchShipmentsByDateAndHouseNumber = async ({houseBill = "", status = ""}: FilterOptions): Promise<FetchShipmentsResult> => {
     const waitTimeMillis = 200 + 1800 * Math.random()
     await setTimeoutAsync(waitTimeMillis)
     const shouldFail = Math.random() < FAILURE_RATIO
@@ -88,8 +89,8 @@ export const fetchShipmentsByDateAndHouseNumber = async ({houseBill = "", arriva
     }
 
     const shipmentDataFiltered: Shipment[] = adjustShipmentDates(SHIPMENTS_DATA).filter((ship:Shipment) => {
-        console.log(new Date(ship.estimatedArrival))
-        return ship.houseBillNumber.includes(houseBill) && isSameDay(arrivalTime, new Date(ship.estimatedArrival))
+        return ship.houseBillNumber.includes(houseBill) && ship.status.includes(status)
+        
     })
 
     return {
