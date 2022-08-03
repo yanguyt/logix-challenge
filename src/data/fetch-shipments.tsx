@@ -1,20 +1,40 @@
-import { format } from 'date-fns'
+import { format, isSameDay } from 'date-fns'
 import { Shipment } from "./Shipment"
 import { SHIPMENTS_DATA } from './shipments-data'
 
+export enum RequestStatus {
+    ERROR = "ERROR",
+    SUCCESS = "SUCCESS",
+    LOADING = "LOADING"
+}
+
 type ErrorResult = {
-    status: 'ERROR'
+    status: RequestStatus.ERROR
     message: string
 }
 
 type SuccessResult = {
-    status: 'SUCCESS'
+    status: RequestStatus.SUCCESS
     shipments: Shipment[]
+}
+
+type LoadingResult = {
+    status: RequestStatus.LOADING
+}
+
+type FilterOptions = {
+    arrivalTime?: Date
+    houseBill?: string
+}
+
+export const INITIAL_RESULT: LoadingResult = {
+    status: RequestStatus.LOADING
 }
 
 export type FetchShipmentsResult =
     | ErrorResult
     | SuccessResult
+    | LoadingResult
 
 // To make your life easier, we'll adjust the dates to be more current
 const millisToAdd = new Date().getTime() - new Date("4/19/19").getTime()
@@ -46,12 +66,34 @@ export const fetchShipments = async (): Promise<FetchShipmentsResult> => {
     const shouldFail = Math.random() < FAILURE_RATIO
     if (shouldFail) {
         return {
-            status: 'ERROR',
+            status: RequestStatus.ERROR,
             message: 'Something went wrong'
         }
     }
     return {
-        status: 'SUCCESS',
+        status: RequestStatus.SUCCESS,
         shipments: adjustShipmentDates(SHIPMENTS_DATA)
+    }
+}
+
+export const fetchShipmentsByDateAndHouseNumber = async ({houseBill = "", arrivalTime = new Date()}: FilterOptions): Promise<FetchShipmentsResult> => {
+    const waitTimeMillis = 200 + 1800 * Math.random()
+    await setTimeoutAsync(waitTimeMillis)
+    const shouldFail = Math.random() < FAILURE_RATIO
+    if (shouldFail) {
+        return {
+            status: RequestStatus.ERROR,
+            message: 'Something went wrong'
+        }
+    }
+
+    const shipmentDataFiltered: Shipment[] = adjustShipmentDates(SHIPMENTS_DATA).filter((ship:Shipment) => {
+        console.log(new Date(ship.estimatedArrival))
+        return ship.houseBillNumber.includes(houseBill) && isSameDay(arrivalTime, new Date(ship.estimatedArrival))
+    })
+
+    return {
+        status: RequestStatus.SUCCESS,
+        shipments: shipmentDataFiltered
     }
 }
