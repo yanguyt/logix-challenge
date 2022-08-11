@@ -36,3 +36,9 @@
     border-radius: 1000px;
     
 }
+
+.change-month-button{
+    padding: 12px 24px;
+    background-color: deepskyblue;
+    border-radius: 16px;
+}
